@@ -1,4 +1,4 @@
-# ams_frontend
+# Frontend Application for attendance managment system.
 
 ## Build Setup
 
