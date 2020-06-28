@@ -48,6 +48,8 @@ export default {
   */
   buildModules: [
     '@nuxtjs/vuetify',
+    "@nuxtjs/axios",
+    "@nuxtjs/auth"
   ],
   /*
   ** Nuxt.js modules

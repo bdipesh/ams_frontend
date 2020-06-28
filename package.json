@@ -11,7 +11,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "nuxt": "^2.13.0"
+    "nuxt": "^2.13.0",
+    "@nuxtjs/auth": "^4.8.5",
+    "@nuxtjs/axios": "^5.9.0",
+    "@vue/composition-api": "^0.3.4"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.2",
