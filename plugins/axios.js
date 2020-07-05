@@ -1,5 +1,5 @@
 export default function ({ $axios, redirect }) {
-  $axios.setBaseURL('http://localhost:8000/')
+  $axios.setBaseURL('http://localhost:9000/')
   $axios.onRequest(config => {
     console.log('Making request to ' + config.url)
   })

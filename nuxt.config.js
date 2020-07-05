@@ -37,12 +37,44 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
+    "~/plugins/axios",
+    "~/plugins/compositionApi",
+    "~/plugins/common.js"
   ],
   /*
   ** Auto import components
   ** See https://nuxtjs.org/api/configuration-components
   */
   components: true,
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: "/api/v1/users/get-token",
+            method: "post",
+            propertyName: "token"
+          },
+          user: {
+            url: "/api/v1/users/detail/me/",
+            method: "get",
+            propertyName: false
+          },
+          logout: false
+        },
+        tokenType: "Bearer"
+      }
+    },
+    redirect: {
+      login: "/account/login/",
+      logout: "/account/login/",
+      callback: "/account/login/",
+      home: "/"
+    },
+    rewriteRedirects: false,
+    fullPathRedirect: false,
+    localStorage: false
+  },
   /*
   ** Nuxt.js dev-modules
   */
@@ -54,6 +86,9 @@ export default {
   /*
   ** Nuxt.js modules
   */
+  router: {
+    middleware: ["auth"]
+  },
   modules: [
   ],
   /*

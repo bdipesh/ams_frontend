@@ -50,18 +50,36 @@
   </v-card>
 </template>
 <script>
-  export default {
-    layout: "blank",
-    data() {
-      return {
-        email: "",
-        password: ""
+    export default {
+      layout: "blank",
+      data() {
+        return {
+          email: "",
+          password: ""
+        }
+      },
+      created() {
+        document.title = "Login | Attendance management System"
+      },
+      methods: {
+        async login() {
+          let data = { email: this.email, password: this.password }
+          await this.$auth
+            .loginWith("local", { data })
+            .then(() => {
+              this.setNotify({
+                message: "Successfully Login. Welcome to AMS!",
+                color: "green"
+              })
+              this.$router.push("/")
+            })
+            .catch(() => {
+              this.setNotify({
+                message: "Invalid Username or Password.",
+                color: "red"
+              })
+            })
+        }
       }
-    },
-    created() {
-      document.title = "Login | Attendance management System"
-    },
-    methods: {
     }
-  }
 </script>

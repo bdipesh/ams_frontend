@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      {{ title }}
+      {{ 'Add New User' }}
     </v-card-title>
     <v-divider class="my-0" />
     <v-card-text>
