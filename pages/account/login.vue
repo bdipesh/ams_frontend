@@ -14,10 +14,11 @@
             </v-card-title>
             <v-card flat class="mx-4">
               <v-card-text class="pb-0">
-                <v-text-field v-model="email" label="Username" />
+                <v-text-field v-model="email" id="email" label="Username" />
                 <v-text-field
                   v-model="password"
                   label="Password"
+                  id="password"
                   type="Password"
                 />
               </v-card-text>
@@ -25,6 +26,7 @@
                 <v-btn
                   color="indigo"
                   depressed
+                  id="loginButton"
                   class="white--text ml-2 text-capitalize"
                   @click="login"
                 >
