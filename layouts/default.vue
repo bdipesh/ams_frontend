@@ -106,9 +106,21 @@ export default {
         },
         {
           icon: "mdi-account-plus",
-          title: "Users",
-          to: "/admin/users",
+          title: "Teachers",
+          to: "/admin/teacher",
           permission: ["Admin"]
+        },
+        {
+          icon: "mdi-account-plus",
+          title: "Students",
+          to: "/admin/student",
+          permission: ["Admin"]
+        },
+        {
+          icon: "mdi-account-plus",
+          title: "Profile",
+          to: "/my-profile",
+          permission: ["Teacher", "Student"]
         },
         {
           icon: "mdi-ballot-recount",
