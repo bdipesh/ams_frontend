@@ -53,6 +53,7 @@
       <v-list dense nav>
         <template v-for="(item, index) in items">
           <v-list-item
+            v-if="item.permission.includes($auth.user.role)"
             :key="index"
             link
             :to="item.to"
@@ -105,6 +106,12 @@ export default {
           permission: ["Admin"]
         },
         {
+          icon: "mdi-ballot-recount",
+          title: "Take Attendance",
+          to: "/attendance",
+          permission: ["Teacher","Admin"]
+        },
+        {
           icon: "mdi-account-plus",
           title: "Teachers",
           to: "/admin/teacher",
@@ -114,7 +121,7 @@ export default {
           icon: "mdi-account-plus",
           title: "Students",
           to: "/admin/student",
-          permission: ["Admin"]
+          permission: ["Admin","Teacher"]
         },
         {
           icon: "mdi-account-plus",
@@ -126,7 +133,7 @@ export default {
           icon: "mdi-ballot-recount",
           title: "Batches",
           to: "/admin/batch",
-          permission: "Admin"
+          permission: ["Admin"]
         }
       ],
       leftDrawer: true,

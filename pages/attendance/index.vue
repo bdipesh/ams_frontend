@@ -36,7 +36,7 @@
                   v-model="filters.batch"
                   :items="userBatchChoices"
                   item-text="batchName"
-                  item-value="batchCode"
+                  item-value="_id"
                   clearable
                   solo
                   flat
@@ -61,7 +61,7 @@
                   v-model="filters.course"
                   :items="userCourseChoices"
                   item-text="courseName"
-                  item-value="courseCode"
+                  item-value="_id"
                   clearable
                   solo
                   flat
@@ -186,6 +186,25 @@
         }
         this.$axios
           .$post("api/v1/attendance", dataToPost)
+          .then(() => {
+            this.setNotify({
+              message: "Successfully taken attendance",
+              color: "green"
+            })
+          })
+          .catch(() => {
+            this.setNotify({ message: "Sorry", color: "green" })
+          })
+      },
+      updateAttendance(details) {
+        const dataToPost = {
+          student: details._id,
+          course: this.filters.course,
+          batch: this.filters.batch,
+          status: details.status
+        }
+        this.$axios
+          .$put("api/v1/attendance/", dataToPost)
           .then(() => {
             this.setNotify({
               message: "Successfully taken attendance",

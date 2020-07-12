@@ -7,6 +7,7 @@
       </div>
       <v-spacer />
       <v-btn
+        v-if="$auth.user.role==='Admin'"
         color="blue-grey darken-2"
         class="white--text"
         depressed
