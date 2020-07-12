@@ -7,6 +7,7 @@
       </div>
       <v-spacer />
       <v-btn
+        v-if="$auth.user.role === 'Admin'"
         color="blue-grey darken-2"
         class="white--text"
         depressed
@@ -36,7 +37,7 @@
           <td class="py-6">
             {{ item.batch }}
           </td>
-          <td class="py-4">
+          <td v-if="$auth.user.role === 'Admin'" class="py-4">
             <v-menu nudge-bottom="40">
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on">
@@ -50,7 +51,7 @@
                 <!--                    View Details-->
                 <!--                  </v-list-item-title>-->
                 <!--                </v-list-item>-->
-                <v-list-item @click="openProfileEditForm(item)">
+                <v-list-item v-if="$auth.user.role === 'Admin'" @click="openProfileEditForm(item)">
                   <v-icon left v-text="'mdi-pencil'" />
                   <v-list-item-title>
                     Edit Details
@@ -77,6 +78,7 @@
       <add-new-user
         v-if="state.openUserForm"
         title="Add New User"
+        as="teacher"
         :action-data="state.actionData"
         @close="
           getUserDetails(),
@@ -93,7 +95,7 @@ import AddNewUser from "../../../components/Users/AddNewUser";
 import UserDetail from "../../../components/LayoutUtils/UserDetail";
 export default {
   components: { UserDetail, AddNewUser },
-  setup(_, { root: { $axios, $route } }) {
+  setup(_, { root: { $auth, $axios, $route } }) {
     const headers = [
       { text: "Name", value: "name", sortable: false },
       { text: "Date of Birth", sortable: false },
@@ -108,7 +110,7 @@ export default {
     });
 
     const getUserDetails = () => {
-      $axios.$get(`api/v1/users/` )
+      $axios.$get(`api/v1/users/?role=Teacher` )
         .then(response => {
           state.userDetails = [...response];
         });
@@ -119,6 +121,9 @@ export default {
     };
     onMounted(() => {
       getUserDetails();
+      if($auth.user.role === 'Student') {
+        headers.pop()
+      }
     });
     return {
       openProfileEditForm,

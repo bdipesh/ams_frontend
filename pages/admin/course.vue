@@ -94,10 +94,13 @@
 </template>
 <script>
   import StudentDetail from "../../components/HomePage/StudentDetail"
+  import pageMixin from "../../mixins/pageMixin";
   export default {
     components: { StudentDetail },
+    mixins: [pageMixin],
     data() {
       return {
+        title: 'Course List | AMS',
         batchForm: false,
         batches: [
           {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-snackbar id="snackMessage" v-text="notifyDetail.message" v-model="notifyDetail.display" :color="notifyDetail.color">
+    <v-snackbar v-text="notifyDetail.message" v-model="notifyDetail.display" :color="notifyDetail.color">
       <v-btn color="red" text @click="notifyDetail.display = false">
         <v-icon
           color="white"

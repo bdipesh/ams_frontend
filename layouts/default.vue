@@ -115,7 +115,19 @@ export default {
           icon: "mdi-account-plus",
           title: "Teachers",
           to: "/admin/teacher",
-          permission: ["Admin"]
+          permission: ["Admin", "Student"]
+        },
+        {
+          icon: "mdi-fingerprint",
+          title: "Attendance Report",
+          to: "/report/attendance",
+          permission: ["Admin", "Teacher"]
+        },
+        {
+          icon: "mdi-fingerprint",
+          title: "View Attendance",
+          to: "/user-attendance",
+          permission: ["Student"]
         },
         {
           icon: "mdi-account-plus",

@@ -42,7 +42,7 @@
           <td class="py-6">
             {{ item.batch }}
           </td>
-          <td class="py-4">
+          <td v-if="$auth.user.role === 'Admin'" class="py-4">
             <v-menu nudge-bottom="40">
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on">
@@ -84,6 +84,8 @@
         v-if="state.openUserForm"
         title="Add New User"
         :action-data="state.actionData"
+        :as="null"
+        :selected-batch="state.selectedBatch"
         @close="
           getUserDetails(),
           (state.actionData = {}),
@@ -97,9 +99,16 @@
 import { reactive, onMounted, computed } from "@vue/composition-api"
 import AddNewUser from "../../../components/Users/AddNewUser"
 import UserDetail from "../../../components/LayoutUtils/UserDetail"
+import pageMixin from "../../../mixins/pageMixin";
 export default {
+  data () {
+    return {
+      title: 'Student List | AMS'
+    }
+  },
+  mixins: [pageMixin],
   components: { UserDetail, AddNewUser },
-  setup(_, { root: { $axios, $route } }) {
+  setup(_, { root: {$auth, $axios, $route } }) {
     const headers = [
       { text: "Name", value: "name", sortable: false },
       { text: "Date of Birth", sortable: false },
@@ -128,7 +137,11 @@ export default {
       state.openUserForm = true
     }
     onMounted(() => {
+      state.selectedBatch = $route.query.selected_batch || ''
       getUserDetails()
+      if($auth.user.role === 'Teacher') {
+        headers.pop()
+      }
     })
     return {
       openProfileEditForm,

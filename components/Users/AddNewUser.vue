@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      {{ 'Add New User' }}
+      {{ update ? 'Update Details' : 'Add New User' }}
     </v-card-title>
     <v-divider class="my-0" />
     <v-card-text>
@@ -29,13 +29,14 @@
               label="Phone *"
             />
           </v-col>
-          <v-col cols="6">
+          <v-col v-if="!update" cols="6">
             <div>Gender</div>
             <v-row>
               <v-col
                 v-for="(gender, index) in genderChoices"
                 :key="index"
                 cols="auto"
+                @click="formValues.gender = gender"
               >
                 <v-btn
                   :outlined="formValues.gender !== gender"
@@ -43,20 +44,12 @@
                   depressed
                   color="blue-grey darken-2"
                   class="white--text"
-                  @click="formValues.gender = gender"
+
                 >
                   {{ gender }}
                 </v-btn>
               </v-col>
             </v-row>
-          </v-col>
-          <v-col v-if="!formValues._id" cols="6">
-            <v-select
-              v-model="formValues.role"
-              :items="userRoleChoices"
-              :rules="requiredRules"
-              label="Role"
-            />
           </v-col>
           <v-col cols="6">
             <v-menu
@@ -83,7 +76,7 @@
               />
             </v-menu>
           </v-col>
-          <v-col cols="6">
+          <v-col v-if="!update" cols="6">
             <v-select
               v-model="formValues.course"
               :items="userCourseChoices"
@@ -95,7 +88,7 @@
               @click="getCourse()"
             />
           </v-col>
-          <v-col cols="6">
+          <v-col v-if="as === 'teacher' && !update" cols="6">
             <v-select
               v-model="formValues.batch"
               :items="userBatchChoices"
@@ -103,6 +96,7 @@
               :rules="requiredRules"
               item-value="_id"
               label="Batch *"
+              :multiple="as === 'teacher'"
               @click="getBatch()"
             />
           </v-col>
@@ -139,7 +133,30 @@
   export default {
     name: "AddNewUser",
     components: {},
-    props: ["title", "actionData"],
+    props: {
+      "title": {
+        type: String,
+        default: ''
+      },
+      actionData: {
+        type: Object,
+        default () {
+          return null
+        }
+      },
+      as: {
+        type: String,
+        default: ''
+      },
+      selectedBatch: {
+        type: String,
+        default: ''
+      },
+      update: {
+        type: Boolean,
+        default: false
+      }
+    },
     data() {
       return {
         genderChoices: ["Male", "Female", "Others"],
@@ -165,11 +182,26 @@
     created() {
       this.getBatch()
       this.getCourse()
+      this.createUserRules()
       if (this.actionData) {
-        this.formValues = this.actionData
+        this.formValues = {...this.actionData, ...{
+            gender: "Male"
+          }}
+          this.formValues.course = this.actionData.course.split(',')
+          this.formValues.batch = this.actionData.batch
       }
+
+
     },
     methods: {
+      createUserRules () {
+        if(this.as && this.as === 'teacher') {
+          this.formValues.role = 'Teacher'
+        } else {
+          this.formValues.role = 'Student'
+          this.formValues.batch = this.$route.query.selected_batch || this.selectedBatch
+        }
+      },
       createUser() {
         const dataToPost = new FormData()
         dataToPost.append("name", this.formValues.name)

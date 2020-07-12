@@ -30,7 +30,7 @@
                   flat
                   clearable
                   label="Selected Course"
-                  item-value="courseCode"
+                  item-value="_id"
                   item-text="courseName"
                   :items="courseDetail"
                 />
