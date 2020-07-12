@@ -10,6 +10,7 @@
         depressed
         color="blue-grey darken-2"
         class="white--text"
+        id="addBatchButton"
         @click="batchForm = true"
       >
         Create New
@@ -46,8 +47,8 @@
         </v-card-title>
         <v-card-text class="">
           <div class="ma-4">
-            <v-text-field v-model="formValues.batchCode" label="Batch Code" />
-            <v-text-field v-model="formValues.batchName" label="Batch Name" />
+            <v-text-field v-model="formValues.batchCode" label="Batch Code" id="batchCode" />
+            <v-text-field v-model="formValues.batchName" label="Batch Name" id="batchName" />
           </div>
         </v-card-text>
         <v-card-actions>
@@ -65,6 +66,7 @@
             color="blue-grey darken-2"
             class="white--text text-capitalize"
             @click="createBatch"
+            id="saveAddBatch"
           >
             Save
           </v-btn>

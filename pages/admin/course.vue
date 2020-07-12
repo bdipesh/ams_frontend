@@ -10,6 +10,7 @@
         depressed
         color="blue-grey darken-2"
         class="white--text"
+        id="addCourseButton"
         @click="batchForm = true"
       >
         Create New
@@ -55,11 +56,13 @@
               <v-text-field
                 v-model="formValues.courseCode"
                 :rules="requiredRules"
+                id="courseCode"
                 label="Course Code"
               />
               <v-text-field
                 v-model="formValues.courseName"
                 :rules="requiredRules"
+                id="courseName"
                 label="Course Name"
               />
             </v-form>
@@ -80,6 +83,7 @@
             color="blue-grey darken-2"
             class="white--text text-capitalize"
             @click="createCourse"
+            id="saveAddCourse"
           >
             Save
           </v-btn>
