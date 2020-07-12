@@ -3,7 +3,7 @@
     <v-card-title>
       <v-icon left v-text="'mdi-account-group'" />
       <div class="blue-grey--text">
-        User List
+        Teacher List
       </div>
       <v-spacer />
       <v-btn
