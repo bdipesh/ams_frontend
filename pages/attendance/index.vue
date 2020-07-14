@@ -122,10 +122,13 @@
 </template>
 <script>
   import UserDetail from "../../components/LayoutUtils/UserDetail"
+  import pageMixin from "../../mixins/pageMixin";
   export default {
     components: { UserDetail },
+    mixins: [pageMixin],
     data() {
       return {
+        title: 'Attendance | AMS',
         filters: {
           course: "",
           batch: ""

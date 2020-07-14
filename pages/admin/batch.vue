@@ -77,10 +77,13 @@
 </template>
 <script>
 import StudentDetail from "../../components/HomePage/StudentDetail"
+import pageMixin from "../../../mixins/pageMixin";
 export default {
   components: { StudentDetail },
+  mixins: [pageMixin],
   data() {
     return {
+      title: 'Batch | AMS',
       batchForm: false,
       batches: [
         {
@@ -102,9 +105,6 @@ export default {
   },
   created() {
     this.getBatch()
-  },
-  mounted() {
-    document.title = "Batch | Attendance management System"
   },
   methods: {
     getBatch() {

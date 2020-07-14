@@ -33,7 +33,9 @@
 import CoursesReport from "../components/HomePage/CoursesReport"
 // import AttendanceActivity from "../components/HomePage/CoursesReport"
 import PostNotice from "../components/HomePage/PostNotice"
+import pageMixin from "../mixins/pageMixin";
 export default {
+  mixins: [pageMixin],
   components: {
     // NoticeCard,
     CoursesReport,
@@ -42,11 +44,9 @@ export default {
   },
   data() {
     return {
+      title:'Notice | AMS',
       noticeDetails: ""
     }
-  },
-  created() {
-    document.title = "Notice | Attendance Management System"
   },
   mounted() {
     this.getNotices()
