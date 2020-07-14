@@ -77,7 +77,7 @@
 </template>
 <script>
 import StudentDetail from "../../components/HomePage/StudentDetail"
-import pageMixin from "../../../mixins/pageMixin";
+import pageMixin from "../../mixins/pageMixin";
 export default {
   components: { StudentDetail },
   mixins: [pageMixin],

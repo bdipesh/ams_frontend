@@ -52,7 +52,7 @@
   </v-card>
 </template>
 <script>
-  import pageMixin from "../../../mixins/pageMixin";
+ import pageMixin from "../../mixins/pageMixin";
     export default {
       mixins: [pageMixin],
       layout: "blank",
