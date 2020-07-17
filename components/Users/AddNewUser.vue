@@ -187,7 +187,7 @@
         this.formValues = {...this.actionData, ...{
             gender: "Male"
           }}
-          this.formValues.course = this.actionData.course.split(',')
+          this.formValues.course = this.actionData.course ? this.actionData.course.split(',') : []
           this.formValues.batch = this.actionData.batch
       }
 
