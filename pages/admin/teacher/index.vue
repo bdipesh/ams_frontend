@@ -93,7 +93,14 @@
 import { reactive, onMounted } from "@vue/composition-api";
 import AddNewUser from "../../../components/Users/AddNewUser";
 import UserDetail from "../../../components/LayoutUtils/UserDetail";
+import pageMixin from "../../../mixins/pageMixin";
 export default {
+  data () {
+    return {
+      title: 'Teacher List | AMS'
+    }
+  },
+  mixins: [pageMixin],
   components: { UserDetail, AddNewUser },
   setup(_, { root: { $auth, $axios, $route } }) {
     const headers = [

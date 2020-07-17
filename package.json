@@ -15,6 +15,8 @@
     "@nuxtjs/axios": "^5.9.0",
     "@vue/composition-api": "^0.3.4",
     "dayjs": "^1.8.29",
+    "mixin": "^0.2.0",
+    "mixins": "0.0.1",
     "nuxt": "^2.13.0"
   },
   "devDependencies": {
@@ -24,5 +26,20 @@
     "babel-jest": "^26.0.1",
     "jest": "^26.0.1",
     "vue-jest": "^3.0.4"
-  }
+  },
+  "description": "```bash\r # install dependencies\r $ npm install",
+  "main": "jest.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdipesh/ams_frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdipesh/ams_frontend/issues"
+  },
+  "homepage": "https://github.com/bdipesh/ams_frontend#readme"
 }

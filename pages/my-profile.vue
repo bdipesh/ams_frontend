@@ -180,17 +180,19 @@
 <script>
 import UserDetail from "../components/LayoutUtils/UserDetail"
 import AddNewUser from "../components/Users/AddNewUser"
+import pageMixin from "../mixins/pageMixin";
 export default {
+  mixins: [pageMixin],
   components: { AddNewUser, UserDetail },
   data() {
     return {
+      title:'My Profile | AMS',
       openProfileEditForm: false,
       userDetail: {}
     }
   },
   created() {
     this.getUserDetail()
-    document.title = "My Profile | Attendance Management System"
   },
   methods: {
     getUserDetail() {

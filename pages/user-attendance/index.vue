@@ -104,9 +104,12 @@
 </template>
 <script>
   import dayjs from "dayjs"
+  import pageMixin from "../../mixins/pageMixin";
   export default {
+    mixins: [pageMixin],
     data() {
       return {
+        title:'User Attendance | AMS',
         selectedCourse: "",
         attendanceDetails: [],
         courseDetail: [],

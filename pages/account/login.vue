@@ -52,16 +52,16 @@
   </v-card>
 </template>
 <script>
+ import pageMixin from "../../mixins/pageMixin";
     export default {
+      mixins: [pageMixin],
       layout: "blank",
       data() {
         return {
+          title: 'Login | AMS',
           email: "",
           password: ""
         }
-      },
-      created() {
-        document.title = "Login | Attendance management System"
       },
       methods: {
         async login() {

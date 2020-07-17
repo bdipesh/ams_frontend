@@ -137,10 +137,13 @@
 <script>
 import dayjs from "dayjs"
 import UserDetail from "../../components/LayoutUtils/UserDetail";
+import pageMixin from "../../mixins/pageMixin";
 export default {
   components: {UserDetail},
+  mixins: [pageMixin],
   data() {
     return {
+      title: 'Report Attendance | AMS',
       selectedCourse: "",
       selectedBatch: "",
       attendanceDetails: [],
