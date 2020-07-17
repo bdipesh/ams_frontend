@@ -182,7 +182,6 @@
     created() {
       this.getBatch()
       this.getCourse()
-      this.createUserRules()
       if (this.actionData) {
         this.formValues = {...this.actionData, ...{
             gender: "Male"
@@ -203,6 +202,7 @@
         }
       },
       createUser() {
+        this.createUserRules()
         const dataToPost = new FormData()
         dataToPost.append("name", this.formValues.name)
         dataToPost.append("email", this.formValues.email)
