@@ -28,10 +28,10 @@
             <v-card-title class="blue-grey--text">
               <div v-text="batch.courseName" />
               <v-spacer />
-              <v-btn icon @click=";(formValues = batch), (batchForm = true)">
-                <v-icon v-text="'mdi-pencil'" />
+              <v-btn icon @click=";(formValues = batch), (batchForm = true)" v-bind:id="batch.courseName">
+                <v-icon v-text="'mdi-pencil'"/>
               </v-btn>
-              <v-btn icon @click="deleteBatch(batch._id)">
+              <v-btn icon @click="deleteBatch(batch._id)" v-bind:id="batch.courseCode">
                 <v-icon v-text="'mdi-delete'" />
               </v-btn>
             </v-card-title>
@@ -141,7 +141,7 @@
       deleteBatch(id) {
         this.$axios.$delete(`api/v1/course/${id}/`).then(() => {
           this.setNotify({
-            message: "Successfully remove Course.",
+            message: "Successfully removed Course.",
             color: "green"
           })
           this.getCourse()

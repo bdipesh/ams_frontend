@@ -23,10 +23,10 @@
             <v-card-title class="blue-grey--text">
               <div @click="$router.push(`/admin/student?selected_batch=${batch._id}`)" v-text="batch.batchName" />
               <v-spacer />
-              <v-btn icon @click=";(formValues = batch), (batchForm = true)">
+              <v-btn icon @click=";(formValues = batch), (batchForm = true)" v-bind:id="batch.batchName">
                 <v-icon v-text="'mdi-pencil'" />
               </v-btn>
-              <v-btn icon @click="deleteBatch(batch._id)">
+              <v-btn icon @click="deleteBatch(batch._id)" v-bind:id="batch.batchCode">
                 <v-icon v-text="'mdi-delete'" />
               </v-btn>
             </v-card-title>
@@ -115,7 +115,7 @@ export default {
     deleteBatch(id) {
       this.$axios.$delete(`api/v1/batch/${id}/`).then(() => {
         this.setNotify({
-          message: "Successfully remove Batch.",
+          message: "Successfully removed Batch.",
           color: "green"
         })
         this.getBatch()
@@ -127,7 +127,7 @@ export default {
           .put(`api/v1/batch/${this.formValues._id}/`, this.formValues)
           .then(response => {
             this.setNotify({
-              message: "Successfully updated Course.",
+              message: "Successfully updated Batch.",
               color: "green"
             })
             this.batchForm = false
@@ -144,7 +144,7 @@ export default {
           .post("api/v1/batch", this.formValues)
           .then(response => {
             this.setNotify({
-              message: "Successfully added batch.",
+              message: "Successfully added Batch.",
               color: "green"
             })
             this.batchForm = false
