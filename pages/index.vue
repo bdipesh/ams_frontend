@@ -1,11 +1,11 @@
 <template>
   <v-row>
     <v-col md="6" xs="12" sm="12">
-      <v-row v-if="noticeDetails.length" align="center">
+      <v-row  align="center">
                 <v-col cols="12">
                   <post-notice class="mb-3" @close="getNotices" />
                 </v-col>
-                <template>
+                <template v-if="noticeDetails.length">
                   <v-col
                     v-for="(notice, index) in noticeDetails"
                     :key="`${index}`"
@@ -16,7 +16,7 @@
                 </template>
 
       </v-row>
-      <v-row v-else>
+      <v-row v-if="!noticeDetails.length">
         <v-col cols="12" class="text-center">
           <div>
             No Notice Posted
