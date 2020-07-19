@@ -26,8 +26,21 @@
               <v-btn icon @click=";(formValues = batch), (batchForm = true)" v-bind:id="batch.batchName">
                 <v-icon v-text="'mdi-pencil'" />
               </v-btn>
-              <v-btn icon @click="deleteBatch(batch._id)" v-bind:id="batch.batchCode">
+              <v-btn icon @click="dialog=true" v-bind:id="batch.batchCode">
                 <v-icon v-text="'mdi-delete'" />
+                <v-row justify="center">
+                  <v-dialog v-model="dialog" persistent max-width="290">
+                    <v-card>
+                      <v-card-title class="headline">Batch Delete</v-card-title>
+                      <v-card-text>Are You Sure? </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
+                        <v-btn color="green darken-1" text @click="deleteBatch(batch._id)">Ok</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-row>
               </v-btn>
             </v-card-title>
             <v-card-text>
@@ -74,6 +87,7 @@
       </v-card>
     </v-dialog>
   </v-card>
+
 </template>
 <script>
 import StudentDetail from "../../components/HomePage/StudentDetail"
@@ -85,6 +99,7 @@ export default {
     return {
       title: 'Batch | AMS',
       batchForm: false,
+      dialog: false,
       batches: [
         {
           totalStudent: "21",
@@ -113,6 +128,7 @@ export default {
       })
     },
     deleteBatch(id) {
+      this.dialog=false;
       this.$axios.$delete(`api/v1/batch/${id}/`).then(() => {
         this.setNotify({
           message: "Successfully removed Batch.",
