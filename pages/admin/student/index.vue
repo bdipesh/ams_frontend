@@ -149,6 +149,17 @@ export default {
       state,
       headers
     }
+  },
+  methods: {
+    deletesUserDetail () {
+      this.$axios.$delete(`/api/v1/users/${this.deleteId}`)
+      .then((response)=> {
+        this.setNotify({message: 'Successfully deleted user.', color: 'green'})
+      })
+      .catch((error) => {
+        this.setNotify({message: 'Sorry something went wrong.', color: 'green'})
+      })
+    }
   }
 }
 </script>
