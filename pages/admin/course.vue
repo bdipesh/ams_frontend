@@ -31,8 +31,21 @@
               <v-btn icon @click=";(formValues = batch), (batchForm = true)" v-bind:id="batch.courseName">
                 <v-icon v-text="'mdi-pencil'"/>
               </v-btn>
-              <v-btn icon @click="deleteBatch(batch._id)" v-bind:id="batch.courseCode">
+              <v-btn icon @click="dialog=true" v-bind:id="batch.courseCode">
                 <v-icon v-text="'mdi-delete'" />
+                <v-row justify="center">
+                  <v-dialog v-model="dialog" persistent max-width="290">
+                    <v-card>
+                      <v-card-title class="headline">Batch Delete</v-card-title>
+                      <v-card-text>Are You Sure? </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
+                        <v-btn color="green darken-1" text @click="deleteBatch(batch._id)">Ok</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-row>
               </v-btn>
             </v-card-title>
             <v-card-text>
@@ -102,6 +115,7 @@
       return {
         title: 'Course List | AMS',
         batchForm: false,
+        dialog:false,
         batches: [
           {
             totalStudent: "21",
@@ -139,6 +153,7 @@
         }
       },
       deleteBatch(id) {
+        this.dialog=false;
         this.$axios.$delete(`api/v1/course/${id}/`).then(() => {
           this.setNotify({
             message: "Successfully removed Course.",
