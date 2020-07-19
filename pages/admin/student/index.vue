@@ -62,12 +62,12 @@
                     Edit Details
                   </v-list-item-title>
                 </v-list-item>
-                <!--                <v-list-item>-->
-                <!--                  <v-icon left v-text="'mdi-delete'" />-->
-                <!--                  <v-list-item-title>-->
-                <!--                    Remove Details-->
-                <!--                  </v-list-item-title>-->
-                <!--                </v-list-item>-->
+                                <v-list-item @click="deletesUserDetail(item._id)">
+                                  <v-icon left v-text="'mdi-delete'" />
+                                  <v-list-item-title>
+                                    Remove Details
+                                  </v-list-item-title>
+                                </v-list-item>
               </v-list>
             </v-menu>
           </td>
@@ -103,7 +103,8 @@ import pageMixin from "../../../mixins/pageMixin";
 export default {
   data () {
     return {
-      title: 'Student List | AMS'
+      title: 'Student List | AMS',
+      deleteId: ''
     }
   },
   mixins: [pageMixin],
@@ -151,13 +152,14 @@ export default {
     }
   },
   methods: {
-    deletesUserDetail () {
-      this.$axios.$delete(`/api/v1/users/${this.deleteId}`)
+    deletesUserDetail (deleteId) {
+      this.$axios.$delete(`/api/v1/users/${deleteId}`)
       .then((response)=> {
         this.setNotify({message: 'Successfully deleted user.', color: 'green'})
       })
       .catch((error) => {
         this.setNotify({message: 'Sorry something went wrong.', color: 'green'})
+        this.getUserDetails()
       })
     }
   }
