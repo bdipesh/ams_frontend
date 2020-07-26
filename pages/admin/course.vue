@@ -11,7 +11,8 @@
         color="blue-grey darken-2"
         class="white--text"
         id="addCourseButton"
-        @click="batchForm = true"
+        @click="(batchForm = true),(update=false)"
+
       >
         Create New
       </v-btn>
@@ -28,7 +29,7 @@
             <v-card-title class="blue-grey--text">
               <div v-text="batch.courseName" />
               <v-spacer />
-              <v-btn icon @click=";(formValues = batch), (batchForm = true)" v-bind:id="batch.courseName">
+              <v-btn icon @click=";(formValues = batch), (batchForm = true),(update=true)" v-bind:id="batch.courseName">
                 <v-icon v-text="'mdi-pencil'"/>
               </v-btn>
               <v-btn icon @click="dialog=true" v-bind:id="batch.courseCode">
@@ -61,7 +62,7 @@
       <v-card>
         <v-card-title class="blue-grey--text">
           <v-icon left v-text="'mdi-file-move'" />
-          Add new Course
+          {{ update ? 'Update Details' : 'Add New Course' }}
         </v-card-title>
         <v-card-text class="">
           <div class="ma-4">
@@ -98,7 +99,7 @@
             @click="createCourse"
             id="saveAddCourse"
           >
-            Save
+            {{ update ? 'Update' : 'Save' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -111,6 +112,10 @@
   export default {
     components: { StudentDetail },
     mixins: [pageMixin],
+    update: {
+      type: Boolean,
+      default: false
+    },
     data() {
       return {
         title: 'Course List | AMS',

@@ -57,12 +57,12 @@
                     Edit Details
                   </v-list-item-title>
                 </v-list-item>
-                <!--                <v-list-item>-->
-                <!--                  <v-icon left v-text="'mdi-delete'" />-->
-                <!--                  <v-list-item-title>-->
-                <!--                    Remove Details-->
-                <!--                  </v-list-item-title>-->
-                <!--                </v-list-item>-->
+                <v-list-item @click="deletesTeacherDetail(item._id)">
+                  <v-icon left v-text="'mdi-delete'" />
+                  <v-list-item-title>
+                    Remove Details
+                  </v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </td>
@@ -97,14 +97,15 @@ import pageMixin from "../../../mixins/pageMixin";
 export default {
   data () {
     return {
-      title: 'Teacher List | AMS'
+      title: 'Teacher List | AMS',
+      dialog: false
     }
   },
   mixins: [pageMixin],
   components: { UserDetail, AddNewUser },
   setup(_, { root: { $auth, $axios, $route } }) {
     const headers = [
-      { text: "Name", value: "name", sortable: false },
+      { text: "Name", value: "name", sortable: true },
       { text: "Date of Birth", sortable: false },
       { text: "Email", sortable: false },
       { text: "Batch", sortable: false },
@@ -138,6 +139,19 @@ export default {
       state,
       headers
     };
+  },
+  methods: {
+    deletesTeacherDetail (deleteId) {
+      this.$axios.$delete(`/api/v1/users/${deleteId}`)
+        .then((response)=> {
+          this.setNotify({message: 'Successfully deleted user.', color: 'green'})
+          this.getUserDetails()
+        })
+        .catch((error) => {
+          this.setNotify({message: 'Sorry something went wrong.', color: 'green'})
+          this.getUserDetails()
+        })
+    }
   }
 };
 </script>

@@ -42,7 +42,7 @@
           <td class="py-6">
             {{ item.batch }}
           </td>
-          <td v-if="$auth.user.role === 'Admin'" class="py-4">
+          <td  class="py-4">
             <v-menu nudge-bottom="40">
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on">
@@ -56,18 +56,37 @@
                 <!--                    View Details-->
                 <!--                  </v-list-item-title>-->
                 <!--                </v-list-item>-->
-                <v-list-item @click="openProfileEditForm(item)">
+                <v-list-item v-if="$auth.user.role === 'Admin'" @click="openProfileEditForm(item)">
                   <v-icon left v-text="'mdi-pencil'" />
                   <v-list-item-title>
                     Edit Details
                   </v-list-item-title>
                 </v-list-item>
-                                <v-list-item @click="deletesUserDetail(item._id)">
-                                  <v-icon left v-text="'mdi-delete'" />
-                                  <v-list-item-title>
-                                    Remove Details
-                                  </v-list-item-title>
-                                </v-list-item>
+                <v-list-item v-if="$auth.user.role === 'Teacher'" @click="openProfileEditForm(item)">
+                  <v-icon left v-text="'mdi-pencil'" />
+                  <v-list-item-title>
+                    View Details
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item v-if="$auth.user.role === 'Admin'" @click="dialog = true">
+                  <v-icon left v-text="'mdi-delete'" />
+                  <v-list-item-title>
+                    Remove Details
+                  </v-list-item-title>
+                  <v-row justify="center">
+                    <v-dialog v-model="dialog" persistent max-width="290">
+                      <v-card>
+                        <v-card-title class="headline">Student Delete</v-card-title>
+                        <v-card-text>Are You Sure? </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
+                          <v-btn color="green darken-1" text @click="deletesUserDetail(item._id)">Ok</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-row>
+                </v-list-item>
               </v-list>
             </v-menu>
           </td>
@@ -104,6 +123,7 @@ export default {
   data () {
     return {
       title: 'Student List | AMS',
+      dialog: false,
       deleteId: ''
     }
   },
@@ -111,7 +131,7 @@ export default {
   components: { UserDetail, AddNewUser },
   setup(_, { root: {$auth, $axios, $route } }) {
     const headers = [
-      { text: "Name", value: "name", sortable: false },
+      { text: "Name", value: "name", sortable: true },
       { text: "Date of Birth", sortable: false },
       { text: "Email", sortable: false },
       { text: "Batch", sortable: false },
@@ -156,6 +176,7 @@ export default {
       this.$axios.$delete(`/api/v1/users/${deleteId}`)
       .then((response)=> {
         this.setNotify({message: 'Successfully deleted user.', color: 'green'})
+        this.getUserDetails()
       })
       .catch((error) => {
         this.setNotify({message: 'Sorry something went wrong.', color: 'green'})

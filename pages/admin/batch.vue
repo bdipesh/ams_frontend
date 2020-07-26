@@ -23,7 +23,7 @@
             <v-card-title class="blue-grey--text">
               <div @click="$router.push(`/admin/student?selected_batch=${batch._id}`)" v-text="batch.batchName" />
               <v-spacer />
-              <v-btn icon @click=";(formValues = batch), (batchForm = true)" v-bind:id="batch.batchName">
+              <v-btn icon @click=";(formValues = batch), (batchForm = true),(update=true)" v-bind:id="batch.batchName">
                 <v-icon v-text="'mdi-pencil'" />
               </v-btn>
               <v-btn icon @click="dialog=true" v-bind:id="batch.batchCode">
@@ -56,7 +56,7 @@
       <v-card>
         <v-card-title class="blue-grey--text">
           <v-icon left v-text="'mdi-file-move'" />
-          Add new batch
+          {{ update ? 'Update Details' : 'Add New Batch' }}
         </v-card-title>
         <v-card-text class="">
           <div class="ma-4">
@@ -81,7 +81,7 @@
             @click="createBatch"
             id="saveAddBatch"
           >
-            Save
+            {{ update ? 'Update' : 'Save' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -95,6 +95,10 @@ import pageMixin from "../../mixins/pageMixin";
 export default {
   components: { StudentDetail },
   mixins: [pageMixin],
+  update: {
+    type: Boolean,
+    default: false
+  },
   data() {
     return {
       title: 'Batch | AMS',
