@@ -366,9 +366,12 @@ export default {
 </template>
 <script>
 import dayjs from "dayjs"
+import pageMixin from "../../mixins/pageMixin";
 export default {
+  mixins: [pageMixin],
   data() {
     return {
+      title: 'Attendance Report | AMS',
       selectedCourse: "",
       selectedBatch: "",
       attendanceDetails: [],
