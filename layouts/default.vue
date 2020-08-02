@@ -1,14 +1,28 @@
 <template>
   <v-app>
-    <v-app-bar fixed color="blue-grey darken-4" dark>
+    <v-app-bar fixed color="#18c0ff" dark>
       <v-app-bar-nav-icon @click.stop="leftDrawer = !leftDrawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-menu bottom nudge-bottom="55">
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon v-text="'mdi-dots-vertical'" />
-          </v-btn>
+            <v-col cols="auto">
+              <v-row v-on="on" v-if="$auth.loggedIn" align="center">
+                <v-col cols="auto" class="mr-3">
+                  <v-avatar size="50">
+                    <v-img :src="'http://localhost:8000/static/' + $auth.user.picture" />
+                  </v-avatar>
+                </v-col>
+                <v-col class="pr-0" cols="auto">
+                  <v-list-item-title class="white--text font-weight-bold">
+                    {{ $auth.user.name }}
+                  </v-list-item-title>
+                </v-col>
+                <v-col class="px-0" cols="auto">
+                  <v-icon v-text="'mdi-chevron-down'"></v-icon>
+                </v-col>
+              </v-row>
+            </v-col>
         </template>
         <v-list dense>
           <v-list-item @click="logout">
@@ -24,33 +38,14 @@
     </v-app-bar>
     <v-navigation-drawer
       v-model="leftDrawer"
-      class=""
+      color="blue-grey darken-4"
       fixed
       clipped
       app
       bottom
       left
     >
-      <v-list-item v-if="$auth.loggedIn" class="mt-12 pt-4">
-        <div class="mr-3">
-          <v-avatar size="50">
-            <v-img :src="'http://localhost:8000/static/' + $auth.user.picture" />
-          </v-avatar>
-        </div>
-        <v-list-item-content>
-          <v-list-item-title class="blue-grey--text font-weight-bold">
-            {{ $auth.user.name }}
-          </v-list-item-title>
-          <v-list-item-subtitle class="grey--text">
-            {{ $auth.user.email }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="grey--text">
-            {{ $auth.user.role }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider class="my-0" />
-      <v-list dense nav>
+      <v-list class="mt-12 pt-8" dense nav>
         <template v-for="(item, index) in items">
           <v-list-item
             v-if="item.permission.includes($auth.user.role)"
@@ -59,11 +54,11 @@
             :to="item.to"
           >
             <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon color="white">{{ item.icon }}</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title class="blue-grey--text font-weight-bold">
+              <v-list-item-title class="white--text font-weight-bold">
                 {{ item.title }}
               </v-list-item-title>
             </v-list-item-content>

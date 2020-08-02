@@ -76,10 +76,10 @@
     </v-card-title>
     <v-divider class="mt-0" />
     <v-card-text class="pt-0">
-      <v-alert v-if="!userDetail.length" type="success">
+      <v-alert v-if="!filters.course || !filters.batch" class="my-5" type="success">
         Please select branch and course to take attendance.
       </v-alert>
-      <v-row>
+      <v-row v-else>
         <v-col cols="12">
           <v-card
             v-for="(user, index) in userDetail"
@@ -111,7 +111,9 @@
     <v-card-actions>
       <v-spacer />
       <v-btn
-        color="blue-grey--text"
+        v-if="filters.course || filters.batch"
+        depressed
+        color="blue-grey"
         class="white--text"
         @click="saveAllAttendance"
       >

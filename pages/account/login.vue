@@ -1,20 +1,19 @@
 <template>
-  <v-card>
-    <v-img src="/loginBackground.png" aspect-ratio="2">
-      <v-row class="justify-center mt-3">
-        <v-col md="5" sm="12">
-          <v-card class="blue lighten-5">
+          <v-card elevation="10" class="">
             <v-card-title class="text--center">
               <v-col class="text-center">
                 <v-img src="/logo.png" height="50" class="ma-auto" width="50" />
-                <div>
+                <div class="blue-grey--text font-weight-bold">
                   Attendance Management System
+                </div>
+                <div class="blue-grey--text font-weight-bold">
+                  Login
                 </div>
               </v-col>
             </v-card-title>
             <v-card flat class="mx-4">
               <v-card-text class="pb-0">
-                <v-text-field v-model="email" id="email" label="Username" />
+                <v-text-field v-model="email" id="email" label="Email" />
                 <v-text-field
                   v-model="password"
                   label="Password"
@@ -32,24 +31,9 @@
                 >
                   Login
                 </v-btn>
-                <v-spacer />
-                <v-checkbox label="Remember me" class="mt-3" />
               </v-card-actions>
             </v-card>
-
-            <v-card-actions>
-              <v-btn
-                text
-                color=""
-                class="indigo--text text-capitalize"
-                v-text="'Forget Password ?'"
-              />
-            </v-card-actions>
           </v-card>
-        </v-col>
-      </v-row>
-    </v-img>
-  </v-card>
 </template>
 <script>
  import pageMixin from "../../mixins/pageMixin";

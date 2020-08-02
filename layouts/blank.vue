@@ -1,13 +1,15 @@
 <template>
   <v-app>
-    <v-container>
-      <v-row align="center" justify="center">
-        <v-col>
+    <v-img src="/loginBackground.png" aspect-ratio="2">
+      <v-row justify="center" class="py-9 mt-12">
+        <v-col cols="5">
           <nuxt />
         </v-col>
       </v-row>
+
+    </v-img>
+
       <vue-snackbar />
-    </v-container>
   </v-app>
 </template>
 <script>
