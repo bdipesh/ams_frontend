@@ -6,6 +6,17 @@
       <v-btn
         v-if="isProfile"
         depressed
+        text
+        color="blue-grey darken-2 t"
+        class=" mx-3" ext-capitalize
+        @click="openChangePassword = true"
+      >
+        <v-icon left v-text="'mdi-list'" />
+       Change Password
+      </v-btn>
+      <v-btn
+        v-if="isProfile"
+        depressed
         color="blue-grey darken-2 text-capitalize"
         class="white--text"
         @click="openProfileEditForm = true"
@@ -184,13 +195,25 @@
         @close="openProfileEditForm = false"
       />
     </v-dialog>
+    <v-dialog
+      v-model="openChangePassword"
+      width="500"
+      scrollable
+    >
+      <change-password
+        v-if="openChangePassword"
+        @close="openChangePassword = false"
+      ></change-password>
+    </v-dialog>
   </v-card>
 </template>
 <script>
 import UserDetail from "../LayoutUtils/UserDetail"
+import ChangePassword from "@/components/Users/ChangePassword";
 export default {
   components: {
-    UserDetail
+    UserDetail,
+    ChangePassword
   },
   props: {
     userDetail: {
@@ -202,6 +225,11 @@ export default {
     isProfile: {
       type: Boolean,
       default: false
+    }
+  },
+  data () {
+    return {
+      openChangePassword: false
     }
   }
 }

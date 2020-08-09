@@ -10,14 +10,6 @@
             {{ `Attendance Report of ${this.$auth.user.name}` }}
           </v-col>
           <v-col cols="12" class="py-0">
-            <div>
-              <span class="body-2 font-weight-bold grey--text">Branch: </span>
-              <span class="blue-grey--text body-2 font-weight-bold">{{
-                "Septemeber"
-              }}</span>
-            </div>
-          </v-col>
-          <v-col cols="12" class="py-0">
             <v-row align="center" justify="center">
               <v-col class="grey--text body-2 font-weight-bold" cols="auto">
                 Select Course
@@ -47,7 +39,7 @@
                 :value="totalPercent"
                 width="8"
               >
-                {{ totalPercent || "100" }}
+                {{ totalPercent.toFixed(2) || "100" }}
               </v-progress-circular>
             </v-col>
             <v-col cols="auto">

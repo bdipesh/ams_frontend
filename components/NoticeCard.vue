@@ -3,6 +3,18 @@
     <v-card-title class="py-0">
       <user-detail :user="noticeDetail.createdBy" />
       <v-spacer></v-spacer>
+      <v-btn v-if="noticeDetail.createdBy && ($auth.user._id === noticeDetail.createdBy._id || $auth.user.role === 'Admin')"
+      icon @click="action = 'edit', message = noticeDetail.notice, noticeDelete = true" text>
+      <v-icon
+        :color="'blue'"
+        v-text="'mdi-pencil'"></v-icon>
+      </v-btn>
+      <v-btn v-if="noticeDetail.createdBy && ($auth.user._id === noticeDetail.createdBy._id || $auth.user.role === 'Admin')"
+             icon @click="action = 'delete', noticeDelete = true" text>
+        <v-icon
+          :color="'red'"
+          v-text="'mdi-delete'"></v-icon>
+      </v-btn>
       <v-btn icon @click="postLike" text>
         <v-icon
           :color="likedUser.includes($auth.user._id) ? 'blue' : ''"
@@ -41,6 +53,45 @@
         :notice-id="noticeDetail._id"
       ></comment-section>
     </v-slide-y-transition>
+    <v-dialog
+      v-model="noticeDelete"
+      width="550"
+    >
+      <v-card v-if="noticeDelete">
+        <v-card-title>
+          Confirm Your Action
+        </v-card-title>
+        <v-card-text>
+          <div v-if="action === 'delete'">
+            Are You Sure You want to delete this notice.
+          </div>
+          <div v-else>
+            <v-textarea
+              v-model="message"
+              label="Message"
+            ></v-textarea>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="noticeDelete = false, message = '', action = '' "
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            depressed
+            color="primary"
+            class="white--text text-capitalize"
+            @click="confirmAction"
+          >
+            {{ action === 'delete' ? 'Yes' : 'Update' }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -52,13 +103,20 @@
       noticeDetail: {
         type: Object,
         default () {
-          return {}
+          return {
+            action: '',
+            deleteNotice: false,
+            message: ''
+          }
         }
       }
     },
     data() {
       return {
         showComments: false,
+        noticeDelete: false,
+        action: '',
+        message: '',
         user: {
           name: "Sandip Thapa",
           createdAt: "2019-01-23",
@@ -75,6 +133,21 @@
       }
     },
     methods: {
+      confirmAction () {
+        if(this.action === 'delete') {
+          this.deletePost()
+        } else {
+          this.updatePost()
+        }
+      },
+      deletePost () {
+        this.$axios.$delete(`api/v1/notice/${this.noticeDetail._id}`)
+        .then((response) => {
+          this.noticeDelete = false
+          this.setNotify({message: 'Successfully Deleted Post.', color: 'green'})
+          this.$emit('refresh')
+        })
+      },
       postLike () {
         let like = parseInt(this.noticeDetail.like )
         let likeUsers = []
@@ -94,6 +167,17 @@
         .then((response)=> {
           this.$emit('refresh')
         })
+      },
+      updatePost() {
+        let dataToPost = {
+          notice: this.message
+        }
+        this.$axios.$put(`/api/v1/notice/${this.noticeDetail._id}`, dataToPost)
+          .then((response)=> {
+            this.$emit('refresh')
+            this.noticeDelete = false
+            this.setNotify({message: 'Successfully Update Post.', color: 'green'})
+          })
       }
 
     }

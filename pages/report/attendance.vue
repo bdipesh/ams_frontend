@@ -295,6 +295,59 @@ export default {
             </v-col>
           </v-row>
         </v-col>
+        <v-col cols="12">
+          <v-col md="5" sm="12" class="py-0">
+            <v-row align="center" justify="center">
+              <v-col
+                class="grey--text body-2 font-weight-bold py-0"
+                cols="auto"
+              >
+                <v-menu
+                  v-model="start"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="start_date"
+                      label="Start Date"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="start_date" @input="menu2 = false"></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col class="py-0">
+                <v-menu
+                  v-model="end"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="end_date"
+                      label="End Date"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="end_date" @input="end = false"></v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-col>
       </v-col>
       <v-col v-if="attendanceDetails.length" cols="6" class="text-right">
         <v-row v-if="attendanceDetails.length" align="center" justify="center">
@@ -353,6 +406,12 @@ export default {
                 {{ props.item.status }}
               </v-chip>
             </td>
+            <td>
+              <v-switch
+                :value="props.item.status === 'Present' ? true : false "
+                @change="changeStatus(props.item)"
+              ></v-switch>
+            </td>
           </tr>
         </template>
         <template slot="no-data">
@@ -378,11 +437,16 @@ export default {
       courseDetail: [],
       selectedStudent: "",
       studentDetails: [],
+      end: false,
+      start: false,
+      start_date:  '',
+      end_date: '',
       batchDetail: [],
       headers: [
         { text: "Student", sortable: false},
         { text: "Date", align: "left", sortable: false },
-        { text: "Status", align: "left", sortable: false }
+        { text: "Status", align: "left", sortable: false },
+        { text: "Update Attendance", align: "left", sortable: false },
       ]
     }
   },
@@ -406,6 +470,16 @@ export default {
     },
     selectedBatch() {
         this.getAttendanceDetails()
+    },
+    start_date () {
+      if(this.start_date && this.end_date) {
+        this.getAttendanceDetails()
+      }
+    },
+    end_date () {
+      if(this.start_date && this.end_date) {
+        this.getAttendanceDetails()
+      }
     }
   },
   created() {
@@ -419,12 +493,34 @@ export default {
       const queryParams = {
         student: this.selectedStudent,
         course: this.selectedCourse || "",
-        batch: this.selectedBatch || ''
+        batch: this.selectedBatch || '',
+        start_date: this.start_date || '',
+        end_date: this.end_date || ''
       }
       this.$axios
         .$get("api/v1/attendance/student/", { params: queryParams })
         .then(response => {
           this.attendanceDetails = response.filter(x => x.studentId.role === 'Student')
+        })
+    },
+    changeStatus (details) {
+      let DataToPost = {
+        status: details.status === 'Present' ? 'Absent' : 'Present',
+        student: details.studentId._id,
+        course: details.courseId,
+        batch: details.batchId,
+      }
+      this.$axios
+        .$put(`api/v1/attendance/${details._id}/`, DataToPost)
+        .then(() => {
+          this.setNotify({
+            message: "Successfully updated attendance",
+            color: "green"
+          })
+          this.getAttendanceDetails()
+        })
+        .catch(() => {
+          this.setNotify({ message: "Sorry", color: "green" })
         })
     },
     getColor(value) {

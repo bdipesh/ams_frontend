@@ -73,6 +73,7 @@
           </v-col>
         </v-col>
       </v-row>
+
     </v-card-title>
     <v-divider class="mt-0" />
     <v-card-text class="pt-0">
@@ -178,11 +179,15 @@
         })
       },
       saveAllAttendance() {
-        this.userDetail.forEach(details => {
-          this.saveAttendance(details)
+        this.userDetail.forEach((details, index) => {
+          if(details.attendance_id) {
+            this.updateAttendance(details)
+          } else {
+            this.saveAttendance(details, index)
+          }
         })
       },
-      saveAttendance(details) {
+      saveAttendance(details, index) {
         const dataToPost = {
           student: details._id,
           course: this.filters.course,
@@ -191,7 +196,8 @@
         }
         this.$axios
           .$post("api/v1/attendance", dataToPost)
-          .then(() => {
+          .then((response) => {
+            this.userDetail[index].attendance_id = response._id
             this.setNotify({
               message: "Successfully taken attendance",
               color: "green"
@@ -201,7 +207,7 @@
             this.setNotify({ message: "Sorry", color: "green" })
           })
       },
-      updateAttendance(details) {
+      updateAttendance(details, id) {
         const dataToPost = {
           student: details._id,
           course: this.filters.course,
@@ -209,7 +215,7 @@
           status: details.status
         }
         this.$axios
-          .$put("api/v1/attendance/", dataToPost)
+          .$put(`api/v1/attendance/${details.attendance_id}/`, dataToPost)
           .then(() => {
             this.setNotify({
               message: "Successfully taken attendance",
