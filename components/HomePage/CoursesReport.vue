@@ -9,7 +9,7 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-row v-if="$auth.user.role === 'Admin'">
+      <v-row>
         <v-col v-for="(course, index) in courses" :key="index" cols="6">
           <course-detail
             :course-code="course._id"
@@ -17,16 +17,16 @@
           />
         </v-col>
       </v-row>
-      <v-row v-else>
-        <v-col v-for="(course, index) in courses" :key="index" cols="6">
-          <div v-if="courses.includes(course._id)">
-            <course-detail
-              :course-code="course._id"
-              :course-name="coursesList.find(x => x._id === course) ? coursesList.find(x => x._id === course).courseName : ''"
-            />
-          </div>
-        </v-col>
-      </v-row>
+<!--      <v-row v-else>-->
+<!--        <v-col v-for="(course, index) in courses" :key="index" cols="6">-->
+<!--          <div v-if="courses.includes(course._id)">-->
+<!--            <course-detail-->
+<!--              :course-code="course._id"-->
+<!--              :course-name="coursesList.find(x => x._id === course) ? coursesList.find(x => x._id === course).courseName : ''"-->
+<!--            />-->
+<!--          </div>-->
+<!--        </v-col>-->
+<!--      </v-row>-->
     </v-card-text>
   </v-card>
 </template>
@@ -42,11 +42,7 @@ export default {
     }
   },
   created() {
-    if(this.$auth.user.role === 'Admin') {
       this.getCourses()
-    } else {
-      this.courses = this.$auth.user.course.split(',')
-    }
   },
   methods: {
     getCourses() {

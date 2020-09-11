@@ -25,7 +25,7 @@
       </v-row>
     </v-col>
 
-    <v-col cols="6">
+    <v-col v-if="$auth.user.role === 'Admin'" cols="6">
       <courses-report />
     </v-col>
   </v-row>

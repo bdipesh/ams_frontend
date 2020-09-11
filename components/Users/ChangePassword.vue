@@ -25,7 +25,7 @@
         text
         color="grey"
         class="text-capitalize"
-        @click="changePassword = false"
+        @click="$emit('close')"
       >
         Cancel
       </v-btn>

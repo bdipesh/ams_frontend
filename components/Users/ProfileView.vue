@@ -197,7 +197,8 @@ export default {
   },
   data () {
     return {
-      openChangePassword: false
+      openChangePassword: false,
+      openProfileEditForm: false
     }
   },
   methods: {
