@@ -7,6 +7,16 @@
       </div>
       <v-spacer />
       <v-btn
+        v-if="$auth.user.role==='Admin'"
+        text
+        color="blue-grey darken-2"
+        class="white--text"
+        depressed
+        @click="importDialog = true"
+      >
+        Import
+      </v-btn>
+      <v-btn
         v-if="$auth.user.role === 'Admin'"
         color="blue-grey darken-2"
         class="white--text"
@@ -35,7 +45,21 @@
             {{ item.email }}
           </td>
           <td class="py-6">
-            {{ item.batch }}
+            <div
+              v-if="!item.batch.includes(',') && state.batches.length"
+            >
+              {{ state.batches.find(x => x._id === item.batch) ? state.batches.find(x => x._id === item.batch).batchName : ''}}
+            </div>
+           <div v-if="item.batch.includes(',')">
+             <div
+               v-for="(batch, index) in state.batches"
+               :key="index"
+             >
+               <div v-if="item.batch.split(',').includes(batch._id)" >
+                 {{ batch.batchName }}
+               </div>
+             </div>
+           </div>
           </td>
           <td v-if="$auth.user.role === 'Admin'" class="py-4">
             <v-menu nudge-bottom="40">
@@ -87,6 +111,64 @@
         "
       />
     </v-dialog>
+    <v-dialog
+      v-model="importDialog"
+      width="500"
+    >
+      <v-card v-if="importDialog">
+        <v-card-title>
+          Import Student
+        </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <v-select
+                v-model="formValues.course"
+                :items="state.courses"
+                :rules="requiredRules"
+                item-text="courseName"
+                item-value="_id"
+                label="Course *"
+                multiple
+              />
+            </v-col>
+            <v-col  cols="12">
+              <v-select
+                v-model="formValues.batch"
+                :items="state.batches"
+                item-text="batchName"
+                multiple
+                :rules="requiredRules"
+                item-value="_id"
+                label="Batch *"
+              />
+            </v-col>
+            <v-col  cols="12">
+              <v-file-input
+                v-model="formValues.importData"
+                :rules="requiredRules"
+                label="Select File *"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            class="white--text"
+            @click="importDialog = false"
+          >Cancel </v-btn>
+          <v-btn
+            color="primary"
+            class="white--text"
+            @click="importStudent"
+          >
+            Import
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -98,7 +180,13 @@ export default {
   data () {
     return {
       title: 'Teacher List | AMS',
-      dialog: false
+      dialog: false,
+      importDialog: false,
+      formValues: {},
+      userCourseChoices: [],
+      filter: {},
+      userBatchChoices: [],
+      requiredRules: [v => !!v || "This field is required"],
     }
   },
   mixins: [pageMixin],
@@ -114,7 +202,8 @@ export default {
     const state = reactive({
       userDetails: [],
       openUserForm: false,
-      actionData: {}
+      actionData: {},
+      batches: {}
     });
 
     const getUserDetails = () => {
@@ -123,11 +212,25 @@ export default {
           state.userDetails = [...response];
         });
     };
+    const getBatch = () => {
+      $axios.$get(`api/v1/batch`)
+      .then((response) => {
+        state.batches = [...response]
+      })
+    }
+    const getCourse = () => {
+      $axios.$get(`api/v1/course`)
+        .then((response) => {
+          state.courses = [...response]
+        })
+    }
     const openProfileEditForm = detail => {
       state.actionData = detail;
       state.openUserForm = true;
     };
     onMounted(() => {
+      getBatch()
+      getCourse()
       getUserDetails();
       if($auth.user.role === 'Student') {
         headers.pop()
@@ -137,10 +240,24 @@ export default {
       openProfileEditForm,
       getUserDetails,
       state,
-      headers
+      headers,
     };
   },
   methods: {
+    importStudent() {
+      const dataToPost =  new FormData()
+      dataToPost.append('course', this.formValues.course.join(','))
+      dataToPost.append('batch', this.formValues.batch.join(','))
+      dataToPost.append('role', 'Teacher')
+      dataToPost.append('files', this.formValues.importData)
+      this.$axios.$post('api/v1/users/import/excel', dataToPost)
+        .then((response) => {
+          this.setNotify({message: 'Successfully Imported Data.', color: 'green'})
+          this.getUserDetails()
+          this.importDialog = false
+          this.formValues = {}
+        })
+    },
     deletesTeacherDetail (deleteId) {
       this.$axios.$delete(`/api/v1/users/${deleteId}`)
         .then((response)=> {

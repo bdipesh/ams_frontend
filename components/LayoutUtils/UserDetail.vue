@@ -3,7 +3,7 @@
     <v-col cols="auto">
       <v-avatar size="50">
         <v-img
-          :src="'http://localhost:8000/static/' + user.picture"
+          :src="'http://localhost:9000/static/' + user.picture"
           contain
           aspect-ratio="2.0"
         />

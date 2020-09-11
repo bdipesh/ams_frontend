@@ -10,9 +10,7 @@
         depressed
         color="blue-grey darken-2"
         class="white--text"
-        id="addCourseButton"
-        @click="(batchForm = true),(update=false)"
-
+        @click="batchForm = true"
       >
         Create New
       </v-btn>
@@ -29,29 +27,16 @@
             <v-card-title class="blue-grey--text">
               <div v-text="batch.courseName" />
               <v-spacer />
-              <v-btn icon @click=";(formValues = batch), (batchForm = true),(update=true)" v-bind:id="batch.courseName">
-                <v-icon v-text="'mdi-pencil'"/>
+              <v-btn icon @click=";(formValues = batch), (batchForm = true)">
+                <v-icon v-text="'mdi-pencil'" />
               </v-btn>
-              <v-btn icon @click="dialog=true" v-bind:id="batch.courseCode">
+              <v-btn icon @click="deleteBatch(batch._id)">
                 <v-icon v-text="'mdi-delete'" />
-                <v-row justify="center">
-                  <v-dialog v-model="dialog" persistent max-width="290">
-                    <v-card>
-                      <v-card-title class="headline">Batch Delete</v-card-title>
-                      <v-card-text>Are You Sure? </v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" text @click="dialog = false">Cancel</v-btn>
-                        <v-btn color="green darken-1" text @click="deleteBatch(batch._id)">Ok</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-row>
               </v-btn>
             </v-card-title>
             <v-card-text>
               <student-detail
-                :endpoint="`api/v1/users?course=${batch.courseCode}`"
+                :endpoint="`api/v1/users?course=${batch._id}`"
               />
             </v-card-text>
           </v-card>
@@ -62,7 +47,7 @@
       <v-card>
         <v-card-title class="blue-grey--text">
           <v-icon left v-text="'mdi-file-move'" />
-          {{ update ? 'Update Details' : 'Add New Course' }}
+          Add new Course
         </v-card-title>
         <v-card-text class="">
           <div class="ma-4">
@@ -70,13 +55,11 @@
               <v-text-field
                 v-model="formValues.courseCode"
                 :rules="requiredRules"
-                id="courseCode"
                 label="Course Code"
               />
               <v-text-field
                 v-model="formValues.courseName"
                 :rules="requiredRules"
-                id="courseName"
                 label="Course Name"
               />
             </v-form>
@@ -97,9 +80,8 @@
             color="blue-grey darken-2"
             class="white--text text-capitalize"
             @click="createCourse"
-            id="saveAddCourse"
           >
-            {{ update ? 'Update' : 'Save' }}
+            Save
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -107,102 +89,93 @@
   </v-card>
 </template>
 <script>
-  import StudentDetail from "../../components/HomePage/StudentDetail"
-  import pageMixin from "../../mixins/pageMixin";
-  export default {
-    components: { StudentDetail },
-    mixins: [pageMixin],
-    update: {
-      type: Boolean,
-      default: false
-    },
-    data() {
-      return {
-        title: 'Course List | AMS',
-        batchForm: false,
-        dialog:false,
-        batches: [
-          {
-            totalStudent: "21",
-            totalTeacher: "21"
-          },
-          {
-            totalTeacher: "21",
-            totalStudent: "21"
-          }
-        ],
-        formValues: {
-          courseName: "",
-          courseCode: ""
+import StudentDetail from "../../components/HomePage/StudentDetail"
+export default {
+  components: { StudentDetail },
+  data() {
+    return {
+      batchForm: false,
+      batches: [
+        {
+          totalStudent: "21",
+          totalTeacher: "21"
         },
-        valid: true,
-        requiredRules: [v => !!v || "This field is required"],
-        batchDetails: []
+        {
+          totalTeacher: "21",
+          totalStudent: "21"
+        }
+      ],
+      formValues: {
+        courseName: "",
+        courseCode: ""
+      },
+      valid: true,
+      requiredRules: [v => !!v || "This field is required"],
+      batchDetails: []
+    }
+  },
+  created() {
+    this.getCourse()
+  },
+  methods: {
+    getCourse() {
+      this.$axios.$get("api/v1/course").then(response => {
+        this.batchDetails = response
+      })
+    },
+    async getUserList(courseId) {
+      let userList = []
+      userList = await this.$axios.$get(`api/v1/users?course=${courseId}`)
+      return {
+        totalTeacher: userList.filter(x => x.role === "Teacher"),
+        totalStudent: userList.filter(x => x.role === "Student")
       }
     },
-    created() {
-      this.getCourse()
+    deleteBatch(id) {
+      this.$axios.$delete(`api/v1/course/${id}/`).then(() => {
+        this.setNotify({
+          message: "Successfully remove Course.",
+          color: "green"
+        })
+        this.getCourse()
+      })
     },
-    methods: {
-      getCourse() {
-        this.$axios.$get("api/v1/course").then(response => {
-          this.batchDetails = response
-        })
-      },
-      async getUserList(courseId) {
-        let userList = []
-        userList = await this.$axios.$get(`api/v1/users?course=${courseId}`)
-        return {
-          totalTeacher: userList.filter(x => x.role === "Teacher"),
-          totalStudent: userList.filter(x => x.role === "Student")
-        }
-      },
-      deleteBatch(id) {
-        this.dialog=false;
-        this.$axios.$delete(`api/v1/course/${id}/`).then(() => {
-          this.setNotify({
-            message: "Successfully removed Course.",
-            color: "green"
-          })
-          this.getCourse()
-        })
-      },
-      createCourse() {
-        if (this.$refs.form.validate()) {
-          if (this.formValues._id) {
-            this.$axios
-              .put(`api/v1/course/${this.formValues._id}/`, this.formValues)
-              .then(() => {
-                this.setNotify({
-                  message: "Successfully updated Course.",
-                  color: "green"
-                })
-                this.batchForm = false
-                this.getCourse()
+    createCourse() {
+      if (this.$refs.form.validate()) {
+        if (this.formValues._id) {
+          this.$axios
+            .put(`api/v1/course/${this.formValues._id}/`, this.formValues)
+            .then(() => {
+              this.setNotify({
+                message: "Successfully updated Course.",
+                color: "green"
               })
-              .catch(() => {
-                this.setNotify("Something went wrong.")
+              this.batchForm = false
+              this.getCourse()
+            })
+            .catch(() => {
+              this.setNotify("Something went wrong.")
+            })
+        } else {
+          this.$axios
+            .post("api/v1/course", this.formValues)
+            .then(() => {
+              this.setNotify({
+                message: "Successfully added Course.",
+                color: "green"
               })
-          } else {
-            this.$axios
-              .post("api/v1/course", this.formValues)
-              .then(() => {
-                this.setNotify({
-                  message: "Successfully added Course.",
-                  color: "green"
-                })
-                this.batchForm = false
-                this.getCourse()
+              this.batchForm = false
+              this.getCourse()
+            })
+            .catch(() => {
+              this.setNotify({
+                message: "Something went wrong.",
+                color: "red"
               })
-              .catch(() => {
-                this.setNotify({
-                  message: "Something went wrong.",
-                  color: "red"
-                })
-              })
-          }
+            })
         }
       }
     }
   }
+}
 </script>

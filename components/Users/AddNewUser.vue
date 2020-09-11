@@ -88,7 +88,7 @@
               @click="getCourse()"
             />
           </v-col>
-          <v-col v-if="as === 'teacher' && !update" cols="6">
+          <v-col v-if="(as === 'teacher' && !update) || !$route.query.selected_batch" cols="6">
             <v-select
               v-model="formValues.batch"
               :items="userBatchChoices"
@@ -198,7 +198,9 @@
           this.formValues.role = 'Teacher'
         } else {
           this.formValues.role = 'Student'
-          this.formValues.batch = this.$route.query.selected_batch || this.selectedBatch
+          if(this.$route.query.selected_batch) {
+            this.formValues.batch = this.$route.query.selected_batch || this.selectedBatch
+          }
         }
       },
       createUser() {
@@ -243,9 +245,9 @@
                 this.$refs.form.resetValidation()
                 this.$emit("close")
               })
-              .catch(() => {
+              .catch((error) => {
                 this.setNotify({
-                  message: `Successfully created ${this.formValues.role}.`,
+                  message: error && error.response.data ? error.response.data.message : `Something went wrong.`,
                   color: "red"
                 })
               })

@@ -145,38 +145,6 @@
                 <v-col />
               </v-row>
             </v-col>
-            <v-col cols="6">
-              <v-row align="center">
-                <v-col cols="auto">
-                  <v-icon v-text="'mdi-calendar'" />
-                </v-col>
-                <v-col cols="auto">
-                  <div class="grey--text">
-                    Date of Birth
-                  </div>
-                  <div class="blue-grey--text">
-                    {{ userDetail.dob }}
-                  </div>
-                </v-col>
-                <v-col />
-              </v-row>
-            </v-col>
-            <v-col cols="6">
-              <v-row align="center">
-                <v-col cols="auto">
-                  <v-icon v-text="'mdi-gender-male-female'" />
-                </v-col>
-                <v-col cols="auto">
-                  <div class="grey--text">
-                    Gender
-                  </div>
-                  <div class="blue-grey--text">
-                    {{ userDetail.gender }}
-                  </div>
-                </v-col>
-                <v-col />
-              </v-row>
-            </v-col>
           </v-row>
         </v-col>
       </v-row>
@@ -230,6 +198,20 @@ export default {
   data () {
     return {
       openChangePassword: false
+    }
+  },
+  methods: {
+    getBatch () {
+      this.$axios.$get(`api/v1/batch`)
+        .then((response) => {
+          this.batches = response
+        })
+    },
+    getCourse () {
+      this.$axios.$get(`api/v1/course`)
+        .then((response) => {
+          this.courses = response
+        })
     }
   }
 }

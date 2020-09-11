@@ -4,17 +4,27 @@
       <div class="title font-weight-bold">
         <v-icon left v-text="'mdi-card-plus'" />
         <span class="blue-grey--text font-weight-bold">
-         My Courses
+        {{ $auth.user.role === 'Admin' ? 'All Courses' : 'My Courses' }}
         </span>
       </div>
     </v-card-title>
     <v-card-text>
-      <v-row>
+      <v-row v-if="$auth.user.role === 'Admin'">
         <v-col v-for="(course, index) in courses" :key="index" cols="6">
           <course-detail
-            :course-code="course.courseCode"
+            :course-code="course._id"
             :course-name="course.courseName"
           />
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col v-for="(course, index) in courses" :key="index" cols="6">
+          <div v-if="courses.includes(course._id)">
+            <course-detail
+              :course-code="course._id"
+              :course-name="coursesList.find(x => x._id === course) ? coursesList.find(x => x._id === course).courseName : ''"
+            />
+          </div>
         </v-col>
       </v-row>
     </v-card-text>
@@ -27,16 +37,26 @@ export default {
   data() {
     return {
       courses: [],
-      attendanceResult: []
+      attendanceResult: [],
+      coursesList: []
     }
   },
   created() {
-    this.getCourses()
+    if(this.$auth.user.role === 'Admin') {
+      this.getCourses()
+    } else {
+      this.courses = this.$auth.user.course.split(',')
+    }
   },
   methods: {
     getCourses() {
       this.$axios.$get("api/v1/course").then(response => {
         this.courses = response
+      })
+    },
+    getCoursesList() {
+      this.$axios.$get("api/v1/course").then(response => {
+        this.coursesList = response
       })
     }
   }
