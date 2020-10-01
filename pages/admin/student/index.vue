@@ -21,19 +21,37 @@
         color="blue-grey darken-2"
         class="white--text"
         depressed
-        @click="state.openUserForm = true"
+        @click="openUserForm = true"
       >
         Create New
       </v-btn>
     </v-card-title>
     <v-divider class="mt-0" />
-    <v-row>
-      <v-col />
-      <v-col />
+    <v-row class="mx-1">
+      <v-col>
+        <v-select
+          v-model="selectedBatch"
+          :items="batches"
+          item-value="_id"
+          clearable
+          item-text="batchName"
+          label="Filter By Branch"
+        ></v-select>
+      </v-col>
+      <v-col>
+        <v-select
+          v-model="selectedCourse"
+          :items="courses"
+          clearable
+          item-value="_id"
+          item-text="courseName"
+          label="Filter by Course."
+        ></v-select>
+      </v-col>
       <v-col />
     </v-row>
     <v-data-table
-      :items="state.userDetails"
+      :items="userDetails"
       :headers="headers"
       dense
       align="center"
@@ -53,11 +71,11 @@
             <div
               v-if="!item.batch.includes(',')"
             >
-              {{ state.batches.find(x => x._id === item.batch) ? state.batches.find(x => x._id === item.batch).batchName : ''}}
+              {{ batches.find(x => x._id === item.batch) ? batches.find(x => x._id === item.batch).batchName : ''}}
             </div>
             <div v-if="item.batch.includes(',')">
               <div
-                v-for="(batch, index) in state.batches"
+                v-for="(batch, index) in batches"
                 :key="index"
               >
                 <div v-if="item.batch.split(',').includes(batch._id)" >
@@ -70,11 +88,11 @@
             <div
               v-if="!item.course.includes(',')"
             >
-              {{ state.courses.find(x => x._id === item.course) ? state.courses.find(x => x._id === item.course).courseName : ''}}
+              {{ courses.find(x => x._id === item.course) ? courses.find(x => x._id === item.course).courseName : ''}}
             </div>
             <div v-if="item.course.includes(',')">
               <div
-                v-for="(course, index) in state.courses"
+                v-for="(course, index) in courses"
                 :key="index"
               >
                 <div class="my-2" v-if="item.course.split(',').includes(course._id)" >
@@ -146,21 +164,21 @@
       ></profile-view>
     </v-dialog>
     <v-dialog
-      v-model="state.openUserForm"
+      v-model="openUserForm"
       scrollable
       width="900"
-      @keypress.esc="state.openUserForm = false"
+      @keypress.esc="openUserForm = false"
     >
       <add-new-user
-        v-if="state.openUserForm"
+        v-if="openUserForm"
         title="Add New User"
-        :action-data="state.actionData"
+        :action-data="actionData"
         :as="null"
-        :selected-batch="state.selectedBatch"
+        :selected-batch="selectedBatch"
         @close="
           getUserDetails(),
-          (state.actionData = {}),
-          (state.openUserForm = false)
+          (actionData = {}),
+          (openUserForm = false)
         "
       />
     </v-dialog>
@@ -232,6 +250,8 @@ import UserDetail from "../../../components/LayoutUtils/UserDetail"
 import pageMixin from "../../../mixins/pageMixin";
 import ProfileView from "../../../components/Users/ProfileView";
 export default {
+  mixins: [pageMixin],
+  components: { UserDetail, ProfileView, AddNewUser },
   data () {
     return {
       title: 'Student List | AMS',
@@ -242,72 +262,71 @@ export default {
       userDetail: {},
       formValues: {},
       userCourseChoices: [],
-      userBatchChoices: [],
-      requiredRules: [v => !!v || "This field is required"],
-    }
-  },
-  mixins: [pageMixin],
-  components: { UserDetail, ProfileView, AddNewUser },
-  setup(_, { root: {$auth, $axios, $route } }) {
-    const headers = [
-      { text: "Name", value: "name", sortable: true },
-      { text: "Date of Birth", value: 'date_of_birth', sortable: true },
-      { text: "Email", value: 'email', sortable: true },
-      { text: "Batch", sortable: false },
-      { text: "Course", sortable: false },
-      { text: "Action", sortable: false }
-    ]
-    const state = reactive({
+      headers:[
+        { text: "Name", value: "name", sortable: true },
+        { text: "Date of Birth", value: 'date_of_birth', sortable: true },
+        { text: "Email", value: 'email', sortable: true },
+        { text: "Batch", sortable: false },
+        { text: "Course", sortable: false },
+        { text: "Action", sortable: false }
+      ],
       userDetails: [],
       openUserForm: false,
       actionData: {},
       selectedBatch: "",
+      selectedCourse: '',
       batches: {},
-      courses: {}
-    })
-    const getUserDetails = () => {
-      $axios
-        .$get(
-          `api/v1/users/?batch=${$route.query.selected_batch ||
-          state.selectedBatch}&role=Student`
-        )
-        .then(response => {
-          state.userDetails = [...response]
-        })
-    }
-    const getBatch = () => {
-      $axios.$get(`api/v1/batch`)
-        .then((response) => {
-          state.batches = response
-        })
-    }
-    const getCourse = () => {
-      $axios.$get(`api/v1/course`)
-        .then((response) => {
-          state.courses = response
-        })
-    }
-    const openProfileEditForm = detail => {
-      state.actionData = detail
-      state.openUserForm = true
-    }
-    onMounted(() => {
-      state.selectedBatch = $route.query.selected_batch || ''
-      getBatch()
-      getCourse()
-      getUserDetails()
-      if($auth.user.role === 'Teacher') {
-        headers.pop()
-      }
-    })
-    return {
-      openProfileEditForm,
-      getUserDetails,
-      state,
-      headers
+      courses: {},
+      userBatchChoices: [],
+      requiredRules: [v => !!v || "This field is required"],
     }
   },
+  watch: {
+    selectedBatch () {
+      this.getUserDetails()
+    },
+    selectedCourse () {
+      this.getUserDetails()
+    }
+  },
+  mounted () {
+    if(this.$auth.user.role === 'Teacher') {
+      this.headers.pop()
+    }
+    this.getBatch()
+    this.getCourse()
+    this.getUserDetails()
+  },
   methods: {
+    getUserDetails () {
+      this.$axios
+        .$get(
+          `api/v1/users/?batch=${this.$route.query.selected_batch ||
+          this.selectedBatch || ''}&course=${this.selectedCourse || ''}&role=Student`
+        )
+        .then(response => {
+          this.userDetails = [...response]
+        })
+    },
+     getBatch  ()  {
+      this.$axios.$get(`api/v1/batch`)
+        .then((response) => {
+          this.batches = response
+          this.userBatchChoices = response
+
+        })
+    },
+     getCourse  ()  {
+      this.$axios.$get(`api/v1/course`)
+        .then((response) => {
+          this.courses = response
+          this.userCourseChoices = response
+        })
+    },
+    openProfileEditForm ( detail) {
+      this.actionData = detail
+      this.openUserForm = true
+    },
     deletesUserDetail () {
       this.$axios.$delete(`/api/v1/users/${this.deleteId}`)
       .then((response)=> {
@@ -317,17 +336,6 @@ export default {
       .catch((error) => {
         this.setNotify({message: 'Sorry something went wrong.', color: 'green'})
         this.getUserDetails()
-      })
-    },
-    getCourse() {
-      this.$axios.$get("api/v1/course").then(response => {
-        this.userCourseChoices = response
-      })
-    },
-    // batch details
-    getBatch() {
-      this.$axios.$get("api/v1/batch").then(response => {
-        this.userBatchChoices = response
       })
     },
     importStudent() {

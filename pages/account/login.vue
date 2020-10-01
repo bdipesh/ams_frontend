@@ -4,7 +4,7 @@
               <v-col class="text-center">
                 <v-img src="/logo.png" height="50" class="ma-auto" width="50" />
                 <div class="blue-grey--text font-weight-bold">
-                  Attendance Management System
+                  Onclick Attendance Management System
                 </div>
                 <div class="blue-grey--text font-weight-bold">
                   Login

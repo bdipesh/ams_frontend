@@ -2,8 +2,14 @@
   <v-app>
     <v-app-bar fixed color="#18c0ff" dark>
       <v-app-bar-nav-icon @click.stop="leftDrawer = !leftDrawer" />
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
+      <v-toolbar-title class="mr-3" v-text="title" />
+      <v-spacer/>
+      <v-chip
+        v-text="$auth.user.role"
+        color="white"
+        class="black--text"
+      ></v-chip>
+      <v-spacer/>
       <v-menu bottom nudge-bottom="55">
         <template v-slot:activator="{ on }">
             <v-col cols="auto">
@@ -98,6 +104,12 @@ export default {
           icon: "mdi-ballot-recount",
           title: "My Courses",
           to: "/admin/course",
+          permission: ["Admin"]
+        },
+        {
+          icon: "mdi-account",
+          title: "Admin User",
+          to: "/admin/admin-user",
           permission: ["Admin"]
         },
         {
